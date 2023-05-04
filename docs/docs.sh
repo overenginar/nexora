@@ -1,5 +1,5 @@
+#!/bin/bash
+conda activate nexora_env
 rm -rf build
 make html
-export FLASK_APP=app.py
-export FLASK_DEBUG=1
-python -m flask run --host=localhost --port=5001
+FLASK_APP=app.py nohup flask run --host=localhost --port=5001 > log.txt 2>&1 &

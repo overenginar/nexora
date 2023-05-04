@@ -1,0 +1,35 @@
+ * Serving Flask app 'app.py'
+ * Debug mode: off
+WARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.
+ * Running on http://localhost:5001
+Press CTRL+C to quit
+127.0.0.1 - - [04/May/2023 16:53:06] "GET / HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/pygments.css HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/jquery.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/documentation_options.js HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/underscore.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/_sphinx_javascript_frameworks_compat.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/theme.css HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/doctools.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/js/theme.js HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/fonts/lato-normal.woff2?bd03a2cc277bbbc338d464e679fe9942 HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/fonts/lato-bold.woff2?cccb897485813c7c256901dbca54ecf2 HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/fonts/fontawesome-webfont.woff2?af7ae505a9eed503f8b8e6982036873e HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/fonts/Roboto-Slab-Bold.woff2?9984f4a9bda09be08e83f2506954adbe HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/fonts/lato-bold-italic.woff2?0b6bb6725576b072c5d0b02ecdd1900d HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 16:53:06] "GET /_static/css/fonts/lato-normal-italic.woff2?4eb103b4d12be57cb1d040ed5e162e9d HTTP/1.1" 200 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET / HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/pygments.css HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/documentation_options.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/jquery.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/theme.css HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/underscore.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/_sphinx_javascript_frameworks_compat.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/doctools.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/js/theme.js HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/fonts/lato-normal.woff2?bd03a2cc277bbbc338d464e679fe9942 HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/fonts/fontawesome-webfont.woff2?af7ae505a9eed503f8b8e6982036873e HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/fonts/lato-bold.woff2?cccb897485813c7c256901dbca54ecf2 HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/fonts/lato-bold-italic.woff2?0b6bb6725576b072c5d0b02ecdd1900d HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/fonts/lato-normal-italic.woff2?4eb103b4d12be57cb1d040ed5e162e9d HTTP/1.1" 304 -
+127.0.0.1 - - [04/May/2023 19:20:40] "GET /_static/css/fonts/Roboto-Slab-Bold.woff2?9984f4a9bda09be08e83f2506954adbe HTTP/1.1" 304 -
