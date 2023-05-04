@@ -24,15 +24,16 @@ import nexora
 ### Building Docker Image
 
 ```shell
-docker build -t overenginar/nexora:latest .
+docker compose build
 ```
 
 ### Running Docker Container
 
 ```shell
-docker run -i -t -p 8901:8888 -p 8902:5001 --name nexora-dev overenginar/nexora:latest
+docker compose up -d --no-build
 ```
-> http://localhost:8901
+> http://localhost:8901 [Pwd: welcome1]
+
 > http://localhost:8902
 
 ### Runing Unit Tests
@@ -69,6 +70,8 @@ python setup.py sdist
 ```
 
 ```shell
+docker build -t overenginar/nexora:latest .
+docker run -i -t -p 8901:8888 -p 8902:5001 --name nexora-dev overenginar/nexora:latest
 docker push overenginar/nexora:latest
 ```
 

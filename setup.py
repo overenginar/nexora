@@ -4,7 +4,8 @@ from setuptools import find_packages
 
 if __name__ == "__main__":
     setup(
-        packages=find_packages(),
+        package_dir={"": "src"},
+        packages=find_packages("src"),
         package_data={"": ["*.json", ".yaml"]},
         include_package_data=True,
     )

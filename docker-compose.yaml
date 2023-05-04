@@ -1,11 +1,11 @@
+---
+version: "3"
 services:
-  app:
-    entrypoint:
-    - sleep
-    - infinity
-    image: docker/dev-environments-default:stable-1
-    init: true
+  ml:
+    build: .
+    image: overenginar/nexora:latest
+    ports:
+      - "8901:8888"
+      - "8902:5001"
     volumes:
-    - type: bind
-      source: /var/run/docker.sock
-      target: /var/run/docker.sock
+      - "~/nexora_data/:/nexora/data"
