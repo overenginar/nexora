@@ -1,0 +1,14 @@
+---
+version: "3"
+services:
+  ml:
+    build: .
+    image: overenginar/nexora:latest
+    ports:
+      - "8901:8888"
+      - "8902:5001"
+      - "8903:8080"
+      - "8904:8050"
+      - "8905:9999"
+    volumes:
+      - "~/nexora_data/:/nexora/data"

@@ -1,2 +1,5 @@
-# nexora
-Next Explora - yet another machine learning library
+### Next Explora
+
+```
+pip install nexora
+```

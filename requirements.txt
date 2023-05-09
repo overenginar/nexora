@@ -1,0 +1,4 @@
+build==0.10.0
+twine==4.0.2
+sphinx_rtd_theme==1.2.0
+pre_commit==3.3.1
