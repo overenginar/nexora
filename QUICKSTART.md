@@ -21,6 +21,13 @@ Next Explora - yet another machine learning library
 5) [Publish](#publish)
     + [Publishing python package](#publishing-python-package)
     + [Publishing docker image](#publishing-docker-image)
+6) [Docker Additional](#docker)
+    + [Training on docker](#training-on-docker)
+    + [Monitoring on docker](#monitoring-on-docker)
+    + [Explain on docker](#explain-on-docker)
+    + [Prediction on docker](#prediction-on-docker)
+    + [Serving on docker](#serving-on-docker)
+
 
 ## Quick Start Guide
 
@@ -48,6 +55,7 @@ import nexora
 ```
 
 > Alternative1: `pip insall -e .`
+
 > Alternative2: `python setup.py sdist`
 
 ### Clean conda environment
@@ -61,6 +69,10 @@ conda env remove -n nexora_env
 ### Building Docker Image
 
 ```shell
+mkdir ~/nexora_data
+```
+
+```shell
 docker compose build
 ```
 
@@ -69,9 +81,9 @@ docker compose build
 ```shell
 docker compose up -d --no-build
 ```
-> http://localhost:8901 [Pwd: welcome1]
+> Jupyter Notebook: http://localhost:8901 [Pwd: welcome1]
 
-> http://localhost:8902
+> Sphinx docs: http://localhost:8902
 
 ## Tests and Documents
 
@@ -136,12 +148,8 @@ nexora explain --model_path=binary-xgb-study-1/atuna_model.0 \
 
 ```python
 import pandas as pd
-import json
 
-with open('binary-xgb-study-1/selected_features.json') as f:
-    features = list(json.load(f).keys())
-
-df = pd.read_csv('data_samples/binary_classification.csv')[features]
+df = pd.read_csv('data_samples/binary_classification.csv')
 df['id'] = list(range(1, df.shape[0] + 1))
 df.to_csv('binary-xgb-study-1/predictions_data.csv', index=False)
 ```
@@ -193,5 +201,89 @@ twine upload dist/*
 ```shell
 docker build -t overenginar/nexora:latest .
 # docker run -i -t -p 8901:8888 -p 8902:5001 -p 8903:8080 -p 8904:8050 -p 8905:9999 --name nexora-dev overenginar/nexora:latest
-docker push overenginar/nexora:latest
+docker push overenginar/nexora:v0.0.3
+```
+
+## Docker Additional
+
+```shell
+docker run -i -t -p 8901:8888 -p 8902:5001 -p 8903:8080 -p 8904:8050 -p 8905:9999 --name nexora-dev overenginar/nexora:latest
+```
+
+```shell
+docker ps | grep nexora-dev
+```
+
+### Training on docker
+
+```shell
+docker exec -it nexora-dev conda run -n nexora_env nexora train --algo=xgb \
+        --fs=1 \
+        --train_filename ./examples/data_samples/binary_classification.csv \
+        --output binary-xgb-study-1 \
+        --targets income \
+        --num_folds 5 \
+        --num_trials 100 \
+        --time_limit 360 \
+        --seed 42
+```
+
+### Monitoring on docker
+
+```shell
+docker exec -it nexora-dev ls  binary-xgb-study-1docker exec -it nexora-dev ls
+```
+
+```shell
+docker exec -it nexora-dev conda run -n nexora_env nexora monitor --db_path=sqlite:///binary-xgb-study-1/params.db
+```
+
+> Optuna Dashboard: http://localhost:8903
+
+### Explain on docker
+
+```shell
+docker exec -it nexora-dev conda run -n nexora_env nexora explain --model_path=binary-xgb-study-1/atuna_model.0 \
+        --data_path=binary-xgb-study-1/valid_fold_0.feather \
+        --config_path=binary-xgb-study-1/atuna.config \
+        --features_path=binary-xgb-study-1/selected_features.json
+```
+
+> Shapash Explanations: http://localhost:8904
+
+### Prediction on docker
+
+```python
+import pandas as pd
+
+df = pd.read_csv('data_samples/binary_classification.csv')
+df['id'] = list(range(1, df.shape[0] + 1))
+df.to_csv('binary-xgb-study-1/predictions_data.csv', index=False)
+```
+
+```shell
+docker exec -it nexora-dev conda run -n nexora_env nexora predict --model_path=binary-xgb-study-1 \
+        --test_filename=binary-xgb-study-1/predictions_data.csv  \
+        --out_filename=binary-xgb-study-1/predictions.csv
+```
+
+```shell
+docker exec -it nexora-dev head binary-xgb-study-1/predictions.csv
+```
+
+### Serving on docker
+
+
+```shell
+docker exec -it nexora-dev conda run -n nexora_env nexora serve --model_path=binary-xgb-study-1
+```
+
+> FastAPI Serving: http://localhost:8905/docs
+
+```shell
+docker exec -it nexora-ml-1 curl -X 'POST' \
+  'http://localhost:9999/predict' \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{"workclass": "Private", "education": "HS-grad", "marital.status": "HS-grad", "occupation": "Handlers-cleaners", "relationship": "Unmarried", "race": "Black", "sex": "Female", "native.country": "United-States", "age": 24, "fnlwgt": 82804, "education.num": 9, "capital.gain": 0, "capital.loss": 0, "hours.per.week": 40 }'
 ```

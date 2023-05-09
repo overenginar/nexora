@@ -13,7 +13,7 @@ COPY . .
 RUN conda env create -f environment.yaml && \
     . /opt/conda/bin/activate && \
     conda activate nexora_env && \
-    make install version=0.0.1
+    make install version=0.0.3
 
 EXPOSE 8888/tcp 5001/tcp 8080/tcp 8050/tcp 9999/tcp
 
