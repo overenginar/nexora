@@ -15,7 +15,7 @@ RUN conda env create -f environment.yaml && \
     conda activate nexora_env && \
     make install version=0.0.1
 
-EXPOSE 8888/tcp 5001/tcp
+EXPOSE 8888/tcp 5001/tcp 8080/tcp 8050/tcp 9999/tcp
 
 COPY jupyter_notebook_config.py /root/.jupyter/jupyter_notebook_config.py
 

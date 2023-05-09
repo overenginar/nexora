@@ -1,0 +1,5 @@
+- test docker image (e2e)
+- test final package
+- develop unit tests
+- add docstrings and update sphinx
+- add more examples on both notebook and cli

@@ -2,9 +2,11 @@ name: nexora_env
 channels:
   - defaults
 dependencies:
-  - python>=3.7
+  - python==3.10
   - anaconda
   - pip
   - pip:
     - -r requirements.txt
+variables:
+  PYTHONWARNINGS: ignore
 prefix: /Users/alicabukel/opt/anaconda3/envs/nexora_env
