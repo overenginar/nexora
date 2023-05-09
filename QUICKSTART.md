@@ -201,7 +201,7 @@ twine upload dist/*
 ```shell
 docker build -t overenginar/nexora:latest .
 # docker run -i -t -p 8901:8888 -p 8902:5001 -p 8903:8080 -p 8904:8050 -p 8905:9999 --name nexora-dev overenginar/nexora:latest
-docker push overenginar/nexora:v0.0.3
+docker push overenginar/nexora:latest
 ```
 
 ## Docker Additional
