@@ -47,8 +47,8 @@ make install version=0.0.1
 import nexora
 ```
 
-> Alternative: `pip insall -e .`
-
+> Alternative1: `pip insall -e .`
+> Alternative2: `python setup.py sdist`
 
 ### Clean conda environment
 
@@ -185,7 +185,6 @@ nexora serve --model_path=binary-xgb-study-1
 ### Publishing python package
 
 ```shell
-python setup.py sdist
 twine upload dist/*
 ```
 
