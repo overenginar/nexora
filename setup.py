@@ -12,4 +12,5 @@ setup(
     include_package_data=True,
     entry_points={"console_scripts": ["nexora=nexora.cli.autotuna:main"]},
     long_description=long_description,
+    long_description_content_type="text/markdown",
 )
