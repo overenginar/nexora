@@ -231,7 +231,7 @@ docker exec -it nexora-dev conda run -n nexora_env nexora train --algo=xgb \
 ### Monitoring on docker
 
 ```shell
-docker exec -it nexora-dev ls  binary-xgb-study-1docker exec -it nexora-dev ls
+docker exec -it nexora-dev ls binary-xgb-study-1
 ```
 
 ```shell
