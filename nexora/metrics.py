@@ -10,10 +10,19 @@ import copy
 
 @dataclass
 class Metrics:
+    """
+    Metrics is derived from dataclass and assigns the problem_type, algorithm and metric types against them.
+
+    Args:
+        problem_type (ProblemType): Problem type enum.
+        algo (Algo): Algorithm type enum.
+
+    """
+
     problem_type: ProblemType
     algo: Algo
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.problem_type == ProblemType.binary_classification:
             log_loss_key = "logloss"
             if self.algo == Algo.lgbm.value:
@@ -56,7 +65,17 @@ class Metrics:
         else:
             raise Exception("Invalid problem type")
 
-    def calculate(self, y_true, y_pred):
+    def calculate(self, y_true: np.ndarray, y_pred: np.ndarray) -> dict:
+        """
+        Calculating the metrics
+
+        Args:
+            y_true (np.ndarray): Actual cases
+            y_pred (np.ndarray): Predictions
+
+        Returns:
+            dict: Metrics dictionary
+        """
         metrics = {}
         for metric_name, metric_func in self.valid_metrics.items():
             if self.problem_type == ProblemType.binary_classification:

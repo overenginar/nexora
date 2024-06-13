@@ -47,7 +47,7 @@ conda activate nexora_env
 ### Building and Installing Package
 
 ```shell
-make install version=0.0.1
+make install version=0.1.0
 ```
 
 ```python
@@ -156,7 +156,7 @@ df.to_csv('binary-xgb-study-1/predictions_data.csv', index=False)
 
 ```shell
 nexora predict --model_path=binary-xgb-study-1 \
-        --test_filename=binary-xgb-study-1/predictions_data.csv  \
+        --test_filename=./data_samples/binary-classification-pred.csv  \
         --out_filename=binary-xgb-study-1/predictions.csv
 ```
 
