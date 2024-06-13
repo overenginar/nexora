@@ -105,7 +105,7 @@ make docs
 
 > Generate Docs: `sphinx-quickstart --sep -p nexora -a="Ali Cabukel" -v=0.0.1 -r=0.0.1 -l=en`
 
-### Code Quality Checks
+### Code Quality Checks
 
 ```shell
 make quality
