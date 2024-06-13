@@ -1,7 +1,19 @@
 from .enums import Algo
+from .schemas import ModelConfig
+import optuna
 
 
-def get_params(trial, model_config):
+def get_params(trial: optuna.Trial, model_config: ModelConfig) -> dict:
+    """
+    This method returns the required parameters for optuna.
+
+    Args:
+        trial (optuna.trial.Trial): Optuna trial
+        model_config (ModelConfig): Model configuration
+
+    Returns:
+        dict: Parameters to optimize
+    """
     if model_config.algo == Algo.xgb.value:
         params = {
             "learning_rate": trial.suggest_float("learning_rate", 1e-2, 0.25, log=True),

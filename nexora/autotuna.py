@@ -18,6 +18,32 @@ from .utils import predict_model, reduce_memory_usage, train_model, select_featu
 
 @dataclass
 class AutoTuna:
+    """
+    AutoTuna is the entrypoint class derived from dataclass
+
+    The constructor allows the following arguments and run training and prediction methods.
+
+    Args:
+        train_file_name (str): Training data location.
+        output (str): Output directory location. Fails if already exists.
+        algo (str): ML algorithm for trainig including xgb, lgbm
+        objective (str, optional): Objective function to optimize with optuna. Defaults to 'loss'.
+        test_filename (str, optional): Test data location to evaluate the model. Defaults to None.
+        task (str, optional): ML task type either classification or regression. Defaults to None.
+        idx (str, optional): Unique identifier column in the data which helps sampling and splitting. Defaults to 'id'.
+        targets (List[str], optional): Target column names. Defaults to None.
+        features (List[str], optional): Selected feature names. Defaults to None.
+        categorical_features (List[str], optional): Categorigal feature names. Defaults to None.
+        use_gpu (bool, optional): Utilise gpu devices if applicable. Defaults to False.
+        num_folds (int, optional): Number of folds for cross-validation. Defaults to 5.
+        seed (int, optional): Seed number for random sampling and model build. Defaults to 42.
+        num_trials (int, optional): The number of study for optimization. Defaults to 1000.
+        time_limit (int, optional): Time limit for optimization. Defaults to None.
+        fast (bool, optional): Fast mode for tuning params. Only one fold will be used if fast mode is set. Defaults to False.
+        fs (int, optional): Feature selection with boruta. Defaults to 0.
+
+    """
+
     # required arguments
     train_filename: str
     output: str
@@ -55,7 +81,18 @@ class AutoTuna:
             logger.warning("No id column specified. Will default to `id`.")
             self.idx = "id"
 
-    def _create_folds(self, train_df, problem_type):
+    def _create_folds(
+        self, train_df: pd.DataFrame, problem_type: ProblemType
+    ) -> pd.DataFrame:
+        """
+        Create k-folds for cross validation
+
+        Args:
+            train_df (pd.DataFrame): Input Data Frame
+
+        Returns:
+            pd.DataFrame: Output data frame
+        """
         if "kfold" in train_df.columns:
             self.num_folds = len(np.unique(train_df["kfold"]))
             logger.info("Using `kfold` for folds from training data")
@@ -104,7 +141,16 @@ class AutoTuna:
             raise Exception("Problem type not supported")
         return train_df
 
-    def _determine_problem_type(self, train_df):
+    def _determine_problem_type(self, train_df: pd.DataFrame) -> ProblemType:
+        """
+        Identify problem type for the given data frame.
+
+        Args:
+            train_df (pd.DataFrame): Input Data Frame
+
+        Returns:
+            ProblemType: ML Problem
+        """
         if self.task is not None:
             if self.task == "classification":
                 if len(self.targets) == 1:
@@ -159,12 +205,27 @@ class AutoTuna:
         logger.info(f"Problem type: {problem_type.name}")
         return problem_type
 
-    def _inject_idxumn(self, df):
+    def _inject_idxumn(self, df: pd.DataFrame) -> pd.DataFrame:
+        """
+        Injecting ID column to the given data framework
+
+        Args:
+            df (pd.DataFrame): Input Data Frame
+
+        Returns:
+            pd.DataFrame: Output Data Frame along with ID column
+        """
         if self.idx not in df.columns:
             df[self.idx] = np.arange(len(df))
         return df
 
-    def _process_data(self):
+    def _process_data(self) -> None:
+        """
+        Data pre-processing
+
+        Returns:
+            None
+        """
         logger.info("Reading training data")
         train_df = pd.read_csv(self.train_filename)
         train_df = reduce_memory_usage(train_df)
@@ -281,7 +342,26 @@ class AutoTuna:
         joblib.dump(categorical_encoders, f"{self.output}/atuna.categorical_encoders")
         joblib.dump(target_encoder, f"{self.output}/atuna.target_encoder")
 
-    def train(self):
+    def train(self) -> None:
+        """
+        Model training method.
+        1) Preprocess data: Shrinking data types to reduce memory usage.
+        2) Preprocess data: Determine the problem type
+        3) Preprocess data: Inject idx column if requried
+        4) Preprocess data: apply preprocessing to test data if applicable
+        5) Preprocess data: Create folds for cross-validation
+        6) Preprocess data: Apply target encoding if applicable
+        7) Preprocess data: Apply categorical feature encoding
+        8) If feature selection was enabled in the config then call the boruta feature selection method
+        9) Update the features prop in the model config with the selected features if applicable.
+        10) Train model with the given model config and find the best parameters after optimization.
+        11) Save the best parameters under the workspace as a json file in order to re-use later and debug it.
+        12) save selected features as a json file under the workspace
+        13) Call the prediction method for OOF and test predictions.
+
+        Returns:
+            None
+        """
         self._process_data()
 
         if self.model_config.fs == 1:
@@ -306,6 +386,15 @@ class AutoTuna:
         logger.info("Training complete")
         self.predict(best_params)
 
-    def predict(self, best_params):
+    def predict(self, best_params: dict) -> None:
+        """
+        Predict the out-of-fold data with the current model and create the test predictions
+
+        Args:
+            best_params (dict): Best parameters after optimization.
+
+        Returns:
+            None
+        """
         logger.info("Creating OOF and test predictions")
         predict_model(self.model_config, best_params)

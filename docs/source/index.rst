@@ -11,11 +11,30 @@ Welcome to nexora's documentation!
    :caption: Contents:
 
 
-Logger main
-==================
-.. automodule:: logger2
+AutoTuna
+=========================================
+.. automodule:: nexora.autotuna.AutoTuna
    :members:
 
+Predict
+=========================================
+.. automodule:: nexora.params
+   :members:
+
+Metrics
+=========================================
+.. automodule:: nexora.metrics.Metrics
+   :members:
+
+Params
+=========================================
+.. automodule:: nexora.params
+   :members:
+
+Utilities
+=========================================
+.. automodule:: nexora.utils
+   :members:
 
 Indices and tables
 ==================

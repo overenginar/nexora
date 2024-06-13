@@ -1,6 +1,7 @@
 import copy
 import os
 from functools import partial
+from typing import Any
 
 import joblib
 import numpy as np
@@ -15,12 +16,23 @@ from .logger import logger
 from .metrics import Metrics
 from .params import get_params
 from .boruta import BorutaPy
+from .schemas import ModelConfig
 
 
 optuna.logging.set_verbosity(optuna.logging.INFO)
 
 
-def reduce_memory_usage(df, verbose=True):
+def reduce_memory_usage(df: pd.DataFrame, verbose: bool = True) -> pd.DataFrame:
+    """
+    Shrinking the given data frame's memory usage by tuning data types.
+
+    Args:
+        df (pd.DataFrame): Input data frame.
+        verbose (bool): Verbose option. Defaults to True.
+
+    Returns:
+        pd.DataFrame: Output data frame.
+    """
     # NOTE: Original author of this function is unknown
     # if you know the *original author*, please let me know.
     numerics = ["int8", "int16", "int32", "int64", "float16", "float32", "float64"]
@@ -62,7 +74,16 @@ def reduce_memory_usage(df, verbose=True):
     return df
 
 
-def dict_mean(dict_list):
+def dict_mean(dict_list: list) -> dict:
+    """
+    Average of the given list of dictionary.
+
+    Args:
+        list: Input data, list of dictionary
+
+    Returns:
+        dict: Output data
+    """
     mean_dict = {}
     for key in dict_list[0].keys():
         mean_dict[key] = sum(d[key] for d in dict_list) / len(dict_list)
@@ -70,8 +91,23 @@ def dict_mean(dict_list):
 
 
 def save_valid_predictions(
-    final_valid_predictions, model_config, target_encoder, output_file_name
-):
+    final_valid_predictions: list,
+    model_config: ModelConfig,
+    target_encoder: Any,
+    output_file_name: str,
+) -> None:
+    """
+    Persist final validation predictions to csv
+
+    Args:
+        final_valid_predictions (list): Final Predictions list
+        model_config (ModelConfig): Model Configuration
+        target_encoder (Any): Target Encoder Model, TODO: Clarify the variable type
+        output_file_name (str): Output file name
+
+    Returns:
+        None
+    """
     final_valid_predictions = pd.DataFrame.from_dict(
         final_valid_predictions, orient="index"
     ).reset_index()
@@ -89,8 +125,25 @@ def save_valid_predictions(
 
 
 def save_test_predictions(
-    final_test_predictions, model_config, target_encoder, test_ids, output_file_name
-):
+    final_test_predictions: dict,
+    model_config: ModelConfig,
+    target_encoder: Any,
+    test_ids: np.ndarray,
+    output_file_name: str,
+) -> None:
+    """
+    Persist final test predictions to csv
+
+    Args:
+        final_valid_predictions (list): Final Predictions list
+        model_config (ModelConfig): Model Configuration
+        target_encoder (Any): Target Encoder Model, TODO: Clarify the variable type
+        test_ids (np.ndarray): Test data ID values
+        output_file_name (str): Output file name
+
+    Returns:
+        None
+    """
     final_test_predictions = np.mean(final_test_predictions, axis=0)
     if target_encoder is None:
         final_test_predictions = pd.DataFrame(
@@ -107,7 +160,16 @@ def save_test_predictions(
     )
 
 
-def fetch_model_params(model_config):
+def fetch_model_params(model_config: ModelConfig) -> tuple:
+    """
+    Fetching model parameters
+
+    Args:
+        model_config (ModelConfig): Model Configuration
+
+    Returns:
+        tuple: tree_model, use_predict_proba, eval_metric, direction
+    """
     if model_config.problem_type == ProblemType.binary_classification:
         if model_config.objective == Objective.loss.value:
             if model_config.algo == Algo.xgb.value:
@@ -208,12 +270,25 @@ def fetch_model_params(model_config):
 
 
 def optimize(
-    trial,
-    tree_model,
-    use_predict_proba,
-    eval_metric,
-    model_config,
-):
+    trial: optuna.Trial,
+    tree_model: Any,
+    use_predict_proba: bool,
+    eval_metric: str,
+    model_config: ModelConfig,
+) -> float:
+    """
+    Optimization function
+
+    Args:
+        trial (optuna.Trial): Trial
+        tree_model (Any): Tree Model object incl xgb, lgbm
+        use_predict_proba (bool): Likelihood probabilities
+        eval_metric (str): Metric name
+        model_config (ModelConfig): Model configuration
+
+    Returns:
+        float: Metric value
+    """
     params = get_params(trial, model_config)
     early_stopping_rounds = params["early_stopping_rounds"]
     del params["early_stopping_rounds"]
@@ -289,7 +364,16 @@ def optimize(
     return mean_metrics[eval_metric]
 
 
-def train_model(model_config):
+def train_model(model_config: ModelConfig) -> dict:
+    """
+    Train model
+
+    Args:
+        model_config (ModelConfig): Model configuration
+
+    Returns:
+        dict: Best params
+    """
     tree_model, use_predict_proba, eval_metric, direction = fetch_model_params(
         model_config
     )
@@ -326,8 +410,17 @@ def train_model(model_config):
     return study.best_params
 
 
-def predict_model(model_config, best_params):
+def predict_model(model_config: ModelConfig, best_params: dict) -> None:
+    """
+    Predict model
 
+    Args:
+        model_config (ModelConfig): Model configuration
+        best_params (dict): Best parameters
+
+    Returns:
+        None
+    """
     early_stopping_rounds = best_params["early_stopping_rounds"]
     del best_params["early_stopping_rounds"]
 
@@ -471,7 +564,18 @@ def predict_model(model_config, best_params):
         logger.info("No test data supplied. Only OOF predictions were generated")
 
 
-def select_features(model_config, fold=0, seed=0):
+def select_features(model_config: ModelConfig, fold: int = 0, seed: int = 0) -> list:
+    """
+    Feature selection
+
+    Args:
+        model_config (ModelConfig): Model configuration
+        fold (int): Fold number. Defaults to 0
+        seed (int): Seed number. Defaults to 0
+
+    Returns:
+        list: Selected features
+    """
 
     train_feather = pd.read_feather(
         os.path.join(model_config.output, f"train_fold_{fold}.feather")

@@ -18,6 +18,15 @@ xgb.set_config(verbosity=0)
 
 @dataclass
 class AutoTunaPredict:
+    """
+    AutoTunaPredict is the prediction class derived from dataclass
+
+    The constructor allows the following arguments and run prediction methods.
+
+    Args:
+        model_path (str): Model location
+    """
+
     model_path: str
 
     def __post_init__(self):
@@ -39,7 +48,13 @@ class AutoTunaPredict:
         _, self.use_predict_proba, _, _ = fetch_model_params(self.model_config)
 
     # TODO: improve schema with optional null values
-    def get_prediction_schema(self):
+    def get_prediction_schema(self) -> None:
+        """
+        Get prediction schema
+
+        Returns:
+            None
+        """
         cat_features = self.model_config.categorical_features
         schema = {"PredictSchema": {}}
         for cf in cat_features:
@@ -50,7 +65,16 @@ class AutoTunaPredict:
                 schema["PredictSchema"][feat] = 10.0
         return create_model("PredictSchema", **schema["PredictSchema"])
 
-    def _predict_df(self, df):
+    def _predict_df(self, df: pd.DataFrame):
+        """
+        Predict the given pandas data frame.
+
+        Args:
+            df (pd.DataFrame): Pandas data frame to predict
+
+        Returns:
+            pd.DataFrame: Prediction data frame.
+        """
         categorical_features = self.model_config.categorical_features
         final_preds = []
         test_ids = df[self.model_config.idx].values
@@ -111,7 +135,17 @@ class AutoTunaPredict:
         self,
         sample: Dict[str, Union[str, int, float]] = None,
         fast_predict: bool = True,
-    ):
+    ) -> dict:
+        """
+        Predict single record
+
+        Args:
+            sample (Dict[str, Union[str, int, float]]): Single record to predict. Defaults to None.
+            fast_predict (bool): Fast prediction option. Defaults to True.
+
+        Returns:
+            dict: Prediction dictionary
+        """
         sample = json.loads(sample)
         sample_df = pd.DataFrame.from_dict(sample, orient="index").T
         sample_df[self.model_config.idx] = 0
@@ -119,7 +153,17 @@ class AutoTunaPredict:
         preds = preds.to_dict(orient="records")[0]
         return preds
 
-    def predict_file(self, test_filename: str, out_filename: str):
+    def predict_file(self, test_filename: str, out_filename: str) -> None:
+        """
+        Predict the given file
+
+        Args:
+            test_filename (str): File location to predict data.
+            out_filename (str): Ouptut file location for the scored data.
+
+        Returns:
+            None
+        """
         test_df = pd.read_csv(test_filename)
         test_df = reduce_memory_usage(test_df)
         final_preds = self._predict_df(test_df)
